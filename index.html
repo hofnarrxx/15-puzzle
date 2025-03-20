@@ -4,13 +4,46 @@
         <meta charset="utf-8"/>
         <title>15puzzle</title>
         <link rel="stylesheet" href="main.css">
+        <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet">
     </head>
     <body>
-        <header></header>
+        <header><h1>15puzzle</h1></header>
         <div id="game-container">
-            
+            <div id="counters">
+                <p>Time:<span id="time-counter">0</span></p>
+                <p>Moves:<span id="moves-counter">0</span></p>
+                <p>TPS:<span id="tps-counter">0</span></p>
+            </div>
             <div id="puzzle-grid">
-
+                <div class="tile">1</div>
+                <div class="tile">2</div>
+                <div class="tile">3</div>
+                <div class="tile">4</div>
+                <div class="tile">5</div>
+                <div class="tile">6</div>
+                <div class="tile">7</div>
+                <div class="tile">8</div>
+                <div class="tile">9</div>
+                <div class="tile">10</div>
+                <div class="tile">11</div>
+                <div class="tile">12</div>
+                <div class="tile">13</div>
+                <div class="tile">14</div>
+                <div class="tile">15</div>
+            </div>
+            <div id="buttons">
+                <div>
+                <label for="size-select">Size:</label>
+                    <select name="size" id="size-select">
+                        <option value="3">3x3</option>
+                        <option value="4">4x4</option>
+                        <option value="5">5x5</option>
+                        <option value="6">6x6</option>
+                        <option value="7">7x7</option>
+                    </select>
+                </div>
+                <button>Restart</button>
+                <button>Settings</button>
             </div>
         </div>
         <footer></footer>

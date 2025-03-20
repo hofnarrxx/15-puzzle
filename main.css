@@ -1,0 +1,49 @@
+/*nice colors
+    green: #0be881
+    dark-black: #1e272e
+    white: #FFFAF0
+*/
+html,body{
+    height:100%;
+}
+body{
+    background-color: #FFFAF0;
+    font-family: "Anta";
+}
+header{
+    display:flex;
+    justify-content: center;
+}
+.tile {
+    background-color: #1e272e;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+#game-container{
+    display:grid;
+    place-content: center;
+    row-gap: 10px;
+}
+#puzzle-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 300px;
+    height: 300px;
+    gap: 5px;
+}
+#counters{
+    display:inline-grid;
+    place-items: center;
+    grid-template-columns: repeat(3,1fr);
+}
+#buttons{
+    display: inline-grid;
+    place-items: center;
+    grid-template-columns: repeat(3,1fr);
+}
