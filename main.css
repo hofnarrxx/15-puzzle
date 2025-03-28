@@ -1,5 +1,5 @@
 /*nice colors
-    green: #0be881
+    green: #00AB6B
     dark-black: #1e272e
     white: #FFFAF0
 */
@@ -28,6 +28,9 @@ header{
 .empty{
     background-color: transparent;
     cursor: default;
+}
+.win{
+    background-color:#00AB6B;
 }
 #game-container{
     display:grid;

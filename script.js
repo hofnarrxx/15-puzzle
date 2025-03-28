@@ -7,8 +7,54 @@ class Tile {
 }
 
 const grid = document.getElementById("puzzle-grid");
-let tiles = [];
+//let tiles = [];
 let gridSize = 4;
+let numbers = [];
+for (let i = 1; i < gridSize * gridSize; i++) {
+    numbers[i-1] = i;
+}
+numbers.push(0);
+
+function shuffle() {
+    do {
+        for (let i = numbers.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+        }
+    } while (!isSolvable(numbers));
+    updateTiles(numbers);
+}
+
+function isSolvable(numbers) {
+    let inversionCount = 0;
+    let gridSize = 4;
+    let emptyRow = 0;
+
+    for (let i = 0; i < numbers.length; i++) {
+        if (numbers[i] === 0) {
+            emptyRow = Math.floor(i / gridSize);
+            continue;
+        }
+
+        for (let j = i + 1; j < numbers.length; j++) {
+            if (numbers[j] !== 0 && numbers[i] > numbers[j]) {
+                inversionCount++;
+            }
+        }
+    }
+    //for odd: solvable if inversion count is even
+    //for even: solvable if parity of inversion count does not match
+    //parity of emptyTile row index
+    if(gridSize % 2 === 1 && inversionCount % 2 === 0){
+        return true;
+    }
+    else if(gridSize % 2 === 0 &&
+         ((emptyRow % 2 === 0) !== (inversionCount % 2 === 0))){
+            console.log("empty row:"+emptyRow+",inversions:"+inversionCount);
+            return true;
+         }
+    return false;
+}
 
 function createTiles() {
     grid.innerHTML = "";
@@ -32,11 +78,32 @@ function createTiles() {
     grid.appendChild(tile);
 }
 
+function updateTiles(numbers) {
+    let childNodes = grid.childNodes;
+    let emptyTile = document.querySelector(".empty");
+    emptyTile.classList.remove("empty");
+    emptyTile.addEventListener("click", moveTile);
+    for (let i = 0; i < childNodes.length; i++) {
+        if (numbers[i] === 0) {
+            childNodes[i].classList.add("empty");
+        }
+        else {
+            childNodes[i].dataset.index = i;
+            childNodes[i].dataset.value = numbers[i];
+            childNodes[i].textContent = numbers[i];
+        }
+    }
+}
+
 function moveTile(event) {
     let clickedTile = event.target;
     let emptyTile = document.querySelector(".empty");
     if (isAdjacent(clickedTile, emptyTile)) {
         swapTiles(clickedTile, emptyTile);
+        let win = checkWin();
+        if (win) {
+            solved();
+        }
     }
 }
 
@@ -65,4 +132,27 @@ function swapTiles(tile1, tile2) {
     temp.replaceWith(tile1);
 }
 
+function checkWin() {
+    const nodes = grid.childNodes;
+    //console.log("checking...");
+    for (let i = 0; i < gridSize * gridSize-1; i++) {
+        console.log(nodes[i].dataset.value+","+(i+1));
+        if (parseInt(nodes[i].dataset.value) !== i+1) {
+            return false;
+        }
+    }
+    console.log("You won!");
+    return true;
+}
+
+function solved() {
+    const tileElements = document.querySelectorAll('.tile');
+    for(let tile of tileElements){
+        if(!tile.classList.contains("empty")){
+            tile.classList.add("win");
+        }
+    }
+}
+
 createTiles();
+shuffle();
