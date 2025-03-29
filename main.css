@@ -36,6 +36,7 @@ header{
     display:grid;
     place-content: center;
     row-gap: 10px;
+    user-select: none;
 }
 #puzzle-grid{
     display: grid;

@@ -9,35 +9,38 @@ class Tile {
 const grid = document.getElementById("puzzle-grid");
 //let tiles = [];
 let gridSize = 4;
-let numbers = [];
+let moves = 0;
+let startTime = null;
+let timerInterval = null;
+let scramble = [];
 for (let i = 1; i < gridSize * gridSize; i++) {
-    numbers[i-1] = i;
+    scramble[i-1] = i;
 }
-numbers.push(0);
+scramble.push(0);
 
 function shuffle() {
     do {
-        for (let i = numbers.length - 1; i > 0; i--) {
+        for (let i = scramble.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
-            [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+            [scramble[i], scramble[j]] = [scramble[j], scramble[i]];
         }
-    } while (!isSolvable(numbers));
-    updateTiles(numbers);
+    } while (!isSolvable(scramble));
+    updateTiles(scramble);
 }
 
-function isSolvable(numbers) {
+function isSolvable(scramble) {
     let inversionCount = 0;
     let gridSize = 4;
     let emptyRow = 0;
 
-    for (let i = 0; i < numbers.length; i++) {
-        if (numbers[i] === 0) {
+    for (let i = 0; i < scramble.length; i++) {
+        if (scramble[i] === 0) {
             emptyRow = Math.floor(i / gridSize);
             continue;
         }
 
-        for (let j = i + 1; j < numbers.length; j++) {
-            if (numbers[j] !== 0 && numbers[i] > numbers[j]) {
+        for (let j = i + 1; j < scramble.length; j++) {
+            if (scramble[j] !== 0 && scramble[i] > scramble[j]) {
                 inversionCount++;
             }
         }
@@ -78,19 +81,20 @@ function createTiles() {
     grid.appendChild(tile);
 }
 
-function updateTiles(numbers) {
+function updateTiles(scramble) {
     let childNodes = grid.childNodes;
     let emptyTile = document.querySelector(".empty");
     emptyTile.classList.remove("empty");
     emptyTile.addEventListener("click", moveTile);
     for (let i = 0; i < childNodes.length; i++) {
-        if (numbers[i] === 0) {
+        if (scramble[i] === 0) {
             childNodes[i].classList.add("empty");
+            childNodes[i].textContent = "";
         }
         else {
             childNodes[i].dataset.index = i;
-            childNodes[i].dataset.value = numbers[i];
-            childNodes[i].textContent = numbers[i];
+            childNodes[i].dataset.value = scramble[i];
+            childNodes[i].textContent = scramble[i];
         }
     }
 }
@@ -100,6 +104,8 @@ function moveTile(event) {
     let emptyTile = document.querySelector(".empty");
     if (isAdjacent(clickedTile, emptyTile)) {
         swapTiles(clickedTile, emptyTile);
+        updateTimeCounter();
+        updateMovesCounter();
         let win = checkWin();
         if (win) {
             solved();
@@ -134,7 +140,6 @@ function swapTiles(tile1, tile2) {
 
 function checkWin() {
     const nodes = grid.childNodes;
-    //console.log("checking...");
     for (let i = 0; i < gridSize * gridSize-1; i++) {
         console.log(nodes[i].dataset.value+","+(i+1));
         if (parseInt(nodes[i].dataset.value) !== i+1) {
@@ -146,12 +151,43 @@ function checkWin() {
 }
 
 function solved() {
+    clearInterval(timerInterval);
     const tileElements = document.querySelectorAll('.tile');
     for(let tile of tileElements){
         if(!tile.classList.contains("empty")){
             tile.classList.add("win");
         }
     }
+}
+
+function updateMovesCounter() {
+    moves++;
+    document.getElementById("moves-counter").textContent = moves;
+}
+
+function startTimer() {
+    if (!startTime) {
+        startTime = Date.now(); 
+        timerInterval = setInterval(updateTimeCounter, 50);
+    }
+}
+
+function getTime(){
+    let elapsedTime = Date.now()- startTime;
+    let seconds = Math.floor(elapsedTime / 1000);
+    let milliseconds = elapsedTime % 1000;
+    return `${seconds}.${milliseconds}`;
+}
+
+function updateTimeCounter(){
+    if(!startTime){
+        startTimer();
+    }
+    let time = getTime();
+    document.getElementById("time-counter").textContent = time;
+    let tps = moves / time; 
+    document.getElementById("tps-counter").textContent = isFinite(tps) ? tps.toFixed(3) : "0.000";
+
 }
 
 createTiles();
