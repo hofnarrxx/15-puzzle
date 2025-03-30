@@ -6,19 +6,24 @@ class Tile {
     }
 }
 
-const grid = document.getElementById("puzzle-grid");
 //let tiles = [];
 let gridSize = 4;
 let moves = 0;
 let startTime = null;
 let timerInterval = null;
-let scramble = [];
-for (let i = 1; i < gridSize * gridSize; i++) {
-    scramble[i-1] = i;
-}
-scramble.push(0);
+const grid = document.getElementById("puzzle-grid");
+document.getElementById("size-select").addEventListener("change", () =>{
+    gridSize = parseInt(document.getElementById("size-select").value);
+    createTiles();
+    shuffle();
+});
 
 function shuffle() {
+    let scramble = [];
+    for (let i = 1; i < gridSize * gridSize; i++) {
+      scramble[i-1] = i;
+    }
+    scramble.push(0);
     do {
         for (let i = scramble.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
@@ -30,7 +35,6 @@ function shuffle() {
 
 function isSolvable(scramble) {
     let inversionCount = 0;
-    let gridSize = 4;
     let emptyRow = 0;
 
     for (let i = 0; i < scramble.length; i++) {
@@ -48,6 +52,7 @@ function isSolvable(scramble) {
     //for odd: solvable if inversion count is even
     //for even: solvable if parity of inversion count does not match
     //parity of emptyTile row index
+    console.log(gridSize);
     if(gridSize % 2 === 1 && inversionCount % 2 === 0){
         return true;
     }
@@ -61,6 +66,8 @@ function isSolvable(scramble) {
 
 function createTiles() {
     grid.innerHTML = "";
+    grid.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
+    grid.style.gridTemplateRows = `repeat(${gridSize},1fr)`;
     for (let i = 0; i < gridSize * gridSize - 1; i++) {
         let tile = document.createElement("div");
         tile.classList.add("tile");
@@ -158,6 +165,11 @@ function solved() {
             tile.classList.add("win");
         }
     }
+}
+
+function reset(){
+    moves = 0;
+
 }
 
 function updateMovesCounter() {

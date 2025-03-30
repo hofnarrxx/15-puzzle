@@ -46,10 +46,13 @@ header{
     height: 300px;
     gap: 5px;
 }
-#counters{
+#counters {
     display:inline-grid;
     place-items: center;
     grid-template-columns: repeat(3,1fr);
+}
+#counters > p{
+    min-width: 100px;
 }
 #buttons{
     display: inline-grid;
