@@ -11,12 +11,24 @@ let gridSize = 4;
 let moves = 0;
 let startTime = null;
 let timerInterval = null;
+
 const grid = document.getElementById("puzzle-grid");
 document.getElementById("size-select").addEventListener("change", () =>{
     gridSize = parseInt(document.getElementById("size-select").value);
     createTiles();
     shuffle();
+    document.getElementById('size-select').blur();
 });
+const darkModeButton = document.getElementById("dark-mode-button");
+darkModeButton.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+});
+const shuffleButton = document.getElementById("shuffle-button");
+shuffleButton.addEventListener("click", () => {
+    shuffle();
+    reset();
+});
+document.addEventListener("keydown", handleKeyPress);
 
 function shuffle() {
     let scramble = [];
@@ -65,6 +77,7 @@ function isSolvable(scramble) {
 }
 
 function createTiles() {
+    reset();
     grid.innerHTML = "";
     grid.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
     grid.style.gridTemplateRows = `repeat(${gridSize},1fr)`;
@@ -94,8 +107,10 @@ function updateTiles(scramble) {
     emptyTile.classList.remove("empty");
     emptyTile.addEventListener("click", moveTile);
     for (let i = 0; i < childNodes.length; i++) {
+        childNodes[i].classList.remove("win");
         if (scramble[i] === 0) {
             childNodes[i].classList.add("empty");
+            childNodes[i].dataset.value = 0;
             childNodes[i].textContent = "";
         }
         else {
@@ -103,6 +118,32 @@ function updateTiles(scramble) {
             childNodes[i].dataset.value = scramble[i];
             childNodes[i].textContent = scramble[i];
         }
+    }
+}
+
+function handleKeyPress(event){
+    let emptyTile = document.querySelector(".empty");
+    let childNodes = grid.childNodes;
+    let emptyIndex = parseInt(emptyTile.dataset.index);
+    let emptyRow = Math.floor(emptyIndex/gridSize);
+    let emptyCol = emptyIndex % gridSize;
+    let targetTile = null;
+    if (event.key === "ArrowUp" && emptyRow < gridSize - 1) {
+        console.log("up");
+        targetTile = childNodes[emptyIndex + gridSize]; // Tile below moves up
+    } else if (event.key === "ArrowDown" && emptyRow > 0) {
+        console.log("down");
+        targetTile = childNodes[emptyIndex - gridSize]; // Tile above moves down
+    } else if (event.key === "ArrowLeft" && emptyCol < gridSize - 1) {
+        console.log("left");
+        console.log(emptyIndex+1);
+        targetTile = childNodes[emptyIndex + 1]; // Tile on right moves left
+    } else if (event.key === "ArrowRight" && emptyCol > 0) {
+        console.log("right");
+        targetTile = childNodes[emptyIndex - 1]; // Tile on left moves right
+    }
+    if(targetTile){
+        moveTile({target: targetTile});
     }
 }
 
@@ -147,7 +188,7 @@ function swapTiles(tile1, tile2) {
 
 function checkWin() {
     const nodes = grid.childNodes;
-    for (let i = 0; i < gridSize * gridSize-1; i++) {
+    for (let i = 0; i < gridSize * gridSize - 1; i++) {
         console.log(nodes[i].dataset.value+","+(i+1));
         if (parseInt(nodes[i].dataset.value) !== i+1) {
             return false;
@@ -169,7 +210,12 @@ function solved() {
 
 function reset(){
     moves = 0;
-
+    document.getElementById("moves-counter").textContent = moves;
+    document.getElementById("tps-counter").textContent = "0.000";
+    clearInterval(timerInterval);
+    timerInterval = null;
+    startTime = null;
+    document.getElementById("time-counter").textContent = "0.000";
 }
 
 function updateMovesCounter() {
