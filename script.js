@@ -1,22 +1,17 @@
 "use strict";
-class Tile {
-    value;
-    constructor(value) {
-        this.value = value;
-    }
-}
 
-//let tiles = [];
 let gridSize = 4;
 let moves = 0;
 let startTime = null;
 let timerInterval = null;
 
+const moveSound = new Audio("assets/click.mp3");
 const grid = document.getElementById("puzzle-grid");
 document.getElementById("size-select").addEventListener("change", () =>{
     gridSize = parseInt(document.getElementById("size-select").value);
     createTiles();
     shuffle();
+    updateBestResults();
     document.getElementById('size-select').blur();
 });
 const darkModeButton = document.getElementById("dark-mode-button");
@@ -88,7 +83,6 @@ function createTiles() {
         tile.dataset.value = i + 1;
         tile.textContent = tile.dataset.value;
         tile.addEventListener("click", moveTile);
-        //tiles.push(tile);
         grid.appendChild(tile);
     }
     //empty
@@ -97,7 +91,6 @@ function createTiles() {
     tile.classList.add("empty");
     tile.dataset.index = gridSize * gridSize - 1;
     tile.dataset.value = 0;
-    //tiles.push(tile);
     grid.appendChild(tile);
 }
 
@@ -152,6 +145,8 @@ function moveTile(event) {
     let emptyTile = document.querySelector(".empty");
     if (isAdjacent(clickedTile, emptyTile)) {
         swapTiles(clickedTile, emptyTile);
+        moveSound.currentTime = 0;
+        moveSound.play();
         updateTimeCounter();
         updateMovesCounter();
         let win = checkWin();
@@ -206,6 +201,23 @@ function solved() {
             tile.classList.add("win");
         }
     }
+    let currentTime = parseFloat(document.getElementById("time-counter").textContent);
+    console.log("Time:"+currentTime);
+    let currentMoves = parseInt(document.getElementById("moves-counter").textContent);
+    console.log("Moves:"+currentMoves);
+    let bestResults = JSON.parse(localStorage.getItem("bestResults")) || {};
+    let key = `grid-${gridSize}`;
+    if (!bestResults[key]) {
+        bestResults[key] = {};
+    }
+    if (!bestResults[key].time || currentTime < bestResults[key].time) {
+        bestResults[key].time = currentTime;
+    }
+    if (!bestResults[key].moves || currentMoves < bestResults[key].moves) {
+        bestResults[key].moves = currentMoves;
+    }
+    localStorage.setItem("bestResults", JSON.stringify(bestResults));
+    updateBestResults();
 }
 
 function reset(){
@@ -248,5 +260,14 @@ function updateTimeCounter(){
 
 }
 
+function updateBestResults() {
+    let bestResults = JSON.parse(localStorage.getItem("bestResults")) || {};
+    let key = `grid-${gridSize}`;
+    console.log(bestResults[key]);
+    document.getElementById("best-time").textContent = bestResults[key]?.time ? bestResults[key].time.toFixed(3) : "--";
+    document.getElementById("best-moves").textContent = bestResults[key]?.moves || "--";
+}
+
 createTiles();
 shuffle();
+updateBestResults();

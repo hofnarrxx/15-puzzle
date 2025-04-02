@@ -17,9 +17,9 @@
             <div id="puzzle-grid">
                
             </div>
-            <div id="buttons">
+            <div id="best-results">
                 <div>
-                <label for="size-select">Size:</label>
+                    <label for="size-select">Size:</label>
                     <select name="size" id="size-select">
                         <option value="3">3x3</option>
                         <option value="4" selected>4x4</option>
@@ -29,7 +29,12 @@
                         <option value="8">8x8</option>
                     </select>
                 </div>
+                <p>Best Time: <span id="best-time">--</span></p>
+                <p>Best Solution: <span id="best-moves">--</span></p>
+            </div>
+            <div id="buttons">
                 <button class="button" id="shuffle-button">Shuffle</button>
+                <button class="button">Leaderboard</button>
                 <button class="button">Settings</button>
                 <button id="dark-mode-button">Dark Mode</button>
             </div>

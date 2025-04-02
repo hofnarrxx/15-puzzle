@@ -55,8 +55,8 @@ header{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 400px;
     gap: 5px;
 }
 #counters {
@@ -71,6 +71,13 @@ header{
     display: inline-grid;
     place-items: center;
     grid-template-columns: repeat(3,1fr);
+}
+
+#best-results{
+    display: inline-grid;
+    width: 400px;
+    place-items: center;
+    grid-template-columns: 1fr 2fr 2fr;
 }
 
 .button {
