@@ -2,11 +2,13 @@
 
 let gridSize = 4;
 let moves = 0;
+let soundEnabled = true;
 let startTime = null;
 let timerInterval = null;
 
 const moveSound = new Audio("assets/click.mp3");
 const grid = document.getElementById("puzzle-grid");
+
 document.getElementById("size-select").addEventListener("change", () =>{
     gridSize = parseInt(document.getElementById("size-select").value);
     createTiles();
@@ -14,15 +16,29 @@ document.getElementById("size-select").addEventListener("change", () =>{
     updateBestResults();
     document.getElementById('size-select').blur();
 });
-const darkModeButton = document.getElementById("dark-mode-button");
-darkModeButton.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-});
+
 const shuffleButton = document.getElementById("shuffle-button");
 shuffleButton.addEventListener("click", () => {
     shuffle();
     reset();
 });
+
+const settingsDialog = document.getElementById("settings");
+const settingsButton = document.getElementById("settings-button");
+settingsButton.onclick = () => settingsDialog.style.display = "block";
+document.getElementById("sound-toggle").checked = soundEnabled;
+const closeButton = document.querySelector(".close");
+const applyButton = document.getElementById("settings-apply-button");
+applyButton.onclick = () => {
+    const darkMode = document.getElementById("dark-mode-toggle").checked;
+    soundEnabled = document.getElementById("sound-toggle").checked;
+    document.body.classList.toggle("dark-mode", darkMode);
+    settingsDialog.style.display = "none";
+  };
+closeButton.onclick = () => settingsDialog.style.display = "none";
+window.onclick = (e) => {
+    if (e.target === settingsDialog) settingsDialog.style.display = "none";
+  };
 document.addEventListener("keydown", handleKeyPress);
 
 function shuffle() {
@@ -145,8 +161,10 @@ function moveTile(event) {
     let emptyTile = document.querySelector(".empty");
     if (isAdjacent(clickedTile, emptyTile)) {
         swapTiles(clickedTile, emptyTile);
-        moveSound.currentTime = 0;
-        moveSound.play();
+        if(soundEnabled){
+            moveSound.currentTime = 0;
+            moveSound.play();
+        }
         updateTimeCounter();
         updateMovesCounter();
         let win = checkWin();
