@@ -286,6 +286,32 @@ function updateBestResults() {
     document.getElementById("best-moves").textContent = bestResults[key]?.moves || "--";
 }
 
+document.getElementById("register-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const res = await fetch("/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: document.getElementById("reg-username").value,
+        password: document.getElementById("reg-password").value
+      })
+    });
+    alert(await res.text());
+  });
+
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const res = await fetch("/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: document.getElementById("login-username").value,
+        password: document.getElementById("login-password").value
+      })
+    });
+    alert(await res.text());
+  });
+
 createTiles();
 shuffle();
 updateBestResults();
