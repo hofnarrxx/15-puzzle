@@ -235,6 +235,7 @@ function solved() {
         bestResults[key].moves = currentMoves;
     }
     localStorage.setItem("bestResults", JSON.stringify(bestResults));
+    submitScore(gridSize,currentTime,currentMoves);
     updateBestResults();
 }
 
@@ -299,18 +300,26 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
     alert(await res.text());
   });
 
-  document.getElementById("login-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const res = await fetch("/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: document.getElementById("login-username").value,
-        password: document.getElementById("login-password").value
-      })
+
+  function submitScore(gridSize, time, moves) {
+    fetch('/scores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gridSize, time, moves })
+    })
+    .then(res => {
+      if (!res.ok){
+        return res.text().then(text => { throw new Error(text || res.statusText); });
+      } 
+      return res.json();
+    })
+    .then(data => {
+      console.log("Score saved!", data);
+    })
+    .catch(err => {
+      console.error("Error submitting score:", err);
     });
-    alert(await res.text());
-  });
+  }
 
 createTiles();
 shuffle();

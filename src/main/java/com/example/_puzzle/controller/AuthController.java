@@ -29,16 +29,6 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String,String> body, HttpSession session){
-        boolean success = userService.login(body.get("username"), body.get("password"));
-        if(success){
-            session.setAttribute("username", body.get("username"));
-            return ResponseEntity.ok("Login successful");
-        }
-        return ResponseEntity.status(401).body("Invalid credentials");
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session){
         session.invalidate();

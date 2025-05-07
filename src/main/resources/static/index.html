@@ -58,15 +58,17 @@
             </div>
         </div>
         <form id="register-form">
-            <input id="reg-username" placeholder="Username" required>
+            <input id="reg-username" placeholder="Username" pattern="[A-Za-z0-9]+"
+            title="A-Z,a-z,0-9 allowed" required>
             <input id="reg-password" type="password" placeholder="Password" required>
             <button type="submit">Register</button>
         </form>
-        <form id="login-form">
-            <input id="login-username" placeholder="Username" required>
-            <input id="login-password" type="password" placeholder="Password" required>
+        <form method="post" action="/login">
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="Password" required />
             <button type="submit">Login</button>
-        </form>
+          </form>
+        <button id="Login">Login</button>
         <script src="script.js"></script>
     </body>
 </html>
