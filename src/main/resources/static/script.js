@@ -296,11 +296,28 @@ function updateTimeCounter(){
 }
 
 function updateBestResults() {
-    let bestResults = JSON.parse(localStorage.getItem("bestResults")) || {};
-    let key = `grid-${gridSize}`;
-    console.log(bestResults[key]);
-    document.getElementById("best-time").textContent = bestResults[key]?.time ? bestResults[key].time.toFixed(3) : "--";
-    document.getElementById("best-moves").textContent = bestResults[key]?.moves || "--";
+    if(isLoggedIn){
+       fetch(`/scores/personal-best/${gridSize}`)
+           .then(response =>{
+                if(!response.ok){
+                    document.getElementById("best-time").textContent = "--";
+                    document.getElementById("best-moves").textContent = "--";
+                }
+                return response.json();
+           })
+           .then(bestResults => {
+                console.log(bestResults);
+                document.getElementById("best-time").textContent = bestResults[0].solveTime;
+                document.getElementById("best-moves").textContent = bestResults[1].moves;
+           });
+    }
+    else{
+        let bestResults = JSON.parse(localStorage.getItem("bestResults")) || {};
+        let key = `grid-${gridSize}`;
+        console.log(bestResults[key]);
+        document.getElementById("best-time").textContent = bestResults[key]?.time ? bestResults[key].time.toFixed(3) : "--";
+        document.getElementById("best-moves").textContent = bestResults[key]?.moves || "--";
+    }
 }
 
 const registerDialog = document.getElementById("register-dialog");
