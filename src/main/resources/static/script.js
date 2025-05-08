@@ -5,6 +5,7 @@ let moves = 0;
 let soundEnabled = true;
 let startTime = null;
 let timerInterval = null;
+let isLoggedIn = false;
 
 const moveSound = new Audio("assets/click.mp3");
 const grid = document.getElementById("puzzle-grid");
@@ -23,21 +24,34 @@ shuffleButton.addEventListener("click", () => {
     reset();
 });
 
+document.querySelectorAll('.close').forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.getAttribute('data-target');
+      const modal = document.getElementById(targetId);
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+
+  window.addEventListener('click', event => {
+    document.querySelectorAll('.modal').forEach(modal => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+
 const settingsDialog = document.getElementById("settings");
 const settingsButton = document.getElementById("settings-button");
 settingsButton.onclick = () => settingsDialog.style.display = "block";
 document.getElementById("sound-toggle").checked = soundEnabled;
-const closeButton = document.querySelector(".close");
 const applyButton = document.getElementById("settings-apply-button");
 applyButton.onclick = () => {
     const darkMode = document.getElementById("dark-mode-toggle").checked;
     soundEnabled = document.getElementById("sound-toggle").checked;
     document.body.classList.toggle("dark-mode", darkMode);
     settingsDialog.style.display = "none";
-  };
-closeButton.onclick = () => settingsDialog.style.display = "none";
-window.onclick = (e) => {
-    if (e.target === settingsDialog) settingsDialog.style.display = "none";
   };
 document.addEventListener("keydown", handleKeyPress);
 
@@ -235,7 +249,9 @@ function solved() {
         bestResults[key].moves = currentMoves;
     }
     localStorage.setItem("bestResults", JSON.stringify(bestResults));
-    submitScore(gridSize,currentTime,currentMoves);
+    if(isLoggedIn){
+        submitScore(gridSize,currentTime,currentMoves);
+    }
     updateBestResults();
 }
 
@@ -287,6 +303,12 @@ function updateBestResults() {
     document.getElementById("best-moves").textContent = bestResults[key]?.moves || "--";
 }
 
+const registerDialog = document.getElementById("register-dialog");
+const registerButton = document.getElementById("register-button");
+const registerResponse = document.getElementById("register-response");
+registerButton.onclick = () => registerDialog.style.display = "block";
+registerResponse.style.display = "none";
+
 document.getElementById("register-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const res = await fetch("/auth/register", {
@@ -297,9 +319,36 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
         password: document.getElementById("reg-password").value
       })
     });
-    alert(await res.text());
-  });
+    const responseText = await res.text();
+    if (res.ok) {
+        registerResponse.textContent = responseText;
+        registerResponse.style.display = "block"; 
+    } else {
+        registerResponse.textContent = "Something went wrong. Please try again.";
+        registerResponse.style.display = "block"; 
+    }
+});
 
+const loginDialog = document.getElementById("login-dialog");
+const loginButton = document.getElementById("login-button");
+loginButton.onclick = () => loginDialog.style.display = "block";
+const logout = document.getElementById("logout");
+
+async function checkLoginStatus(){
+    try {
+        const res = await fetch("/auth/account", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          isLoggedIn = true;
+        } else {
+          isLoggedIn = false;
+        }
+    } catch (err) {
+        console.error("Login check failed", err);
+        isLoggedIn = false;
+    }
+}
 
   function submitScore(gridSize, time, moves) {
     fetch('/scores', {
@@ -321,6 +370,17 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
     });
   }
 
-createTiles();
-shuffle();
-updateBestResults();
+async function onLoad(){
+    await checkLoginStatus();
+    console.log(isLoggedIn);
+    if(isLoggedIn){
+        registerButton.style.display = "none";
+        loginButton.style.display = "none";
+        logout.style.display="block";
+    }
+    createTiles();
+    shuffle();
+    updateBestResults();
+}
+
+onLoad();

@@ -45,6 +45,24 @@ header{
 .win{
     background-color:#00AB6B;
 }
+.buttons-div{
+    display: flex;
+    justify-content: space-evenly;
+}
+.button {
+    background-color: var(--tile-bg);
+    color: var(--tile-text);  
+    padding: 0.375rem 0.625rem;
+    font-size: 0.875rem; 
+    font-weight: 600; 
+    border-radius: 0.375rem; 
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+    border: 1px solid rgba(0, 0, 0, 0.15); 
+}
+.button:hover {
+    background-color: var(--bg-color);
+    color: var(--text-color); 
+}
 .modal {
     display: none;
     position: fixed;
@@ -67,8 +85,13 @@ header{
   }
   .close {
     position: absolute;
-    right: 10px; top: 10px;
+    right: 10px; top: 5px;
     cursor: pointer;
+  }
+  .form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
   }
 #game-container{
     display:grid;
@@ -92,31 +115,10 @@ header{
 #counters > p{
     min-width: 100px;
 }
-#buttons{
-    display: inline-grid;
-    place-items: center;
-    grid-template-columns: repeat(3,1fr);
-}
 
 #best-results{
     display: inline-grid;
     width: 400px;
     place-items: center;
     grid-template-columns: 1fr 2fr 2fr;
-}
-
-.button {
-    background-color: var(--tile-bg);
-    color: var(--tile-text);  
-    padding: 0.375rem 0.625rem;
-    font-size: 0.875rem; 
-    font-weight: 600; 
-    border-radius: 0.375rem; 
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
-    border: 1px solid rgba(0, 0, 0, 0.15); 
-}
-  
-.button:hover {
-    background-color: var(--bg-color);
-    color: var(--text-color); 
 }
