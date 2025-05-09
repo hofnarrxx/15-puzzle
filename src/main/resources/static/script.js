@@ -367,7 +367,7 @@ async function checkLoginStatus(){
     }
 }
 
-  function submitScore(gridSize, time, moves) {
+function submitScore(gridSize, time, moves) {
     fetch('/scores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -385,11 +385,56 @@ async function checkLoginStatus(){
     .catch(err => {
       console.error("Error submitting score:", err);
     });
-  }
+}
+
+const leaderboardButton = document.getElementById("leaderboard-button");
+const leaderboardDialog = document.getElementById("leaderboard-dialog");
+const leaderboardSizeSelect = document.getElementById("leaderboard-size-select");
+const leaderboardTable = document.getElementById("leaderboard-table");
+const leaderboardTableBody = leaderboardTable.getElementsByTagName('tbody')[0];
+
+leaderboardButton.addEventListener("click", async () => {
+    leaderboardDialog.style.display = "block"; 
+    await loadLeaderboard();
+});
+
+leaderboardSizeSelect.addEventListener("change", loadLeaderboard);
+document.querySelectorAll('input[name="sortMode"]').forEach(radio => {
+    radio.addEventListener("change", loadLeaderboard);
+  });
+
+async function loadLeaderboard() {
+    const gridSize = leaderboardSizeSelect.value;
+    const sortMode = document.querySelector('input[name="sortMode"]:checked').value;
+    const endpoint = sortMode === "time" ? `/scores/time/${gridSize}` : `/scores/moves/${gridSize}`;
+    try {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        console.log(data);
+        leaderboardTableBody.innerHTML = ""; 
+  
+        data.forEach((score, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${score.user.username}</td>
+            <td>${score.solveTime.toFixed(2)}</td>
+            <td>${score.moves}</td>
+            `;
+            leaderboardTableBody.appendChild(row);
+        });
+    } catch (err) {
+      leaderboardTableBody.innerHTML = "<tr><td colspan='4'>Error loading leaderboard</td></tr>";
+      console.error("Failed to load leaderboard:", err);
+    }
+}
 
 async function onLoad(){
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === 'true') {
+        document.getElementById("error-dialog").style.display = "block";
+    }
     await checkLoginStatus();
-    console.log(isLoggedIn);
     if(isLoggedIn){
         registerButton.style.display = "none";
         loginButton.style.display = "none";

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password_hash VARCHAR(100) NOT NULL
+    username VARCHAR(15) NOT NULL UNIQUE,
+    password_hash VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS leaderboard (

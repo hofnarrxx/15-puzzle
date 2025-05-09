@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example._puzzle.dto.ScoreDTO;
@@ -44,13 +43,13 @@ public class ScoreController {
         }
     }
 
-    @GetMapping("/time")
-    public List<Score> topByTime(@RequestParam int gridSize){
+    @GetMapping("/time/{gridSize}")
+    public List<Score> topByTime(@PathVariable int gridSize){
         return scoreService.getTopScoresByTime(gridSize);
     }
 
-    @GetMapping("/moves")
-    public List<Score> topByMoves(@RequestParam int gridSize){
+    @GetMapping("/moves/{gridSize}")
+    public List<Score> topByMoves(@PathVariable int gridSize){
         return scoreService.getTopScoresByMoves(gridSize);
     }
 }

@@ -34,7 +34,7 @@
             </div>
             <div class="buttons-div">
                 <button class="button" id="shuffle-button">Shuffle</button>
-                <button class="button">Leaderboard</button>
+                <button class="button" id="leaderboard-button">Leaderboard</button>
                 <button class="button" id="settings-button">Settings</button>
             </div>
             <div class="buttons-div">
@@ -64,13 +64,36 @@
             </div>
             </div>
         </div>
+        <div id="leaderboard-dialog" class="modal">
+            <div class="modal-content" id="leaderboard-container">
+                <h2>Leaderboard</h2>
+                <div id="leaderboard-options">
+                    <select id="leaderboard-size-select">
+                        <option value="3">3x3</option>
+                        <option value="4" selected>4x4</option>
+                        <option value="5">5x5</option>
+                        <option value="6">6x6</option>
+                        <option value="7">7x7</option>
+                        <option value="8">8x8</option>
+                    </select>
+                    <label><input type="radio" name="sortMode" value="time" checked> Time</label>
+                    <label><input type="radio" name="sortMode" value="moves"> Moves</label>
+                </div>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr><th>#</th><th>User</th><th>Time (s)</th><th>Moves</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
         <div id="register-dialog" class="modal">
             <div class="modal-content">
                 <span class="close" data-target="register-dialog">&times;</span>
                 <form class="form" id="register-form">
                     <input id="reg-username" placeholder="Username" pattern="[A-Za-z0-9]+"
-                    title="A-Z,a-z,0-9 allowed" required>
-                    <input id="reg-password" type="password" placeholder="Password" required>
+                    title="A-Z,a-z,0-9 allowed" maxlength="15" required>
+                    <input id="reg-password" type="password" placeholder="Password" minlength="8" required>
                     <button type="submit" class="button">Register</button>
                 </form>
                 <p id="register-response"></p>
@@ -80,10 +103,16 @@
             <div class="modal-content">
                 <span class="close" data-target="login-dialog">&times;</span>
                 <form method="post" action="/login" class="form">
-                    <input type="text" name="username" placeholder="Username" required />
-                    <input type="password" name="password" placeholder="Password" required />
+                    <input type="text" name="username" placeholder="Username" maxlength="15" required />
+                    <input type="password" name="password" placeholder="Password" minlength="8" required />
                     <button type="submit" class="button">Login</button>
                 </form>
+            </div>
+        </div>
+        <div id="error-dialog" class="modal">
+            <div class="modal-content">
+                <span class="close" data-target="error-dialog">&times;</span>
+                <p>Invalid Credentials</p>
             </div>
         </div>
         <script src="script.js"></script>
