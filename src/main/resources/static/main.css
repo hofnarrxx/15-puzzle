@@ -158,3 +158,97 @@ dialog#leaderboard-dialog {
     overflow-y: auto;
     overflow-x: hidden;
   }
+
+  @media (max-width: 768px) {
+    #puzzle-grid {
+      width: 90vw;
+      height: 90vw;
+      margin: 1rem auto;
+      gap: 4px;
+    }
+  
+    header h1 {
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+  
+    #counters,
+    #best-results {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: 0.5rem;
+      text-align: center;
+    }
+  
+    #counters p,
+    #best-results p {
+      margin: 0.25rem 0;
+      font-size: 1rem;
+    }
+  
+    .buttons-div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+  
+    .button {
+      width: 80%;
+      padding: 0.8rem;
+      font-size: 1rem;
+    }
+  
+    .modal-content,
+    dialog#leaderboardDialog {
+      width: 90%;
+      margin: 15% auto;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+  
+    #leaderboard-options,
+    #gridSizeSelect {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+  
+    label {
+      display: block;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+  
+    .leaderboard-container {
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 6px;
+    }
+  
+    .leaderboard-container::-webkit-scrollbar {
+      width: 6px;
+    }
+  
+    .leaderboard-container::-webkit-scrollbar-thumb {
+      background: #aaa;
+      border-radius: 3px;
+    }
+  
+    .leaderboard-container::-webkit-scrollbar-thumb:hover {
+      background: #777;
+    }
+  
+    #leaderboardTable th,
+    #leaderboardTable td {
+      padding: 0.6rem;
+      font-size: 0.9rem;
+    }
+  }
+  

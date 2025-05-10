@@ -89,13 +89,11 @@ function isSolvable(scramble) {
     //for odd: solvable if inversion count is even
     //for even: solvable if parity of inversion count does not match
     //parity of emptyTile row index
-    console.log(gridSize);
     if(gridSize % 2 === 1 && inversionCount % 2 === 0){
         return true;
     }
     else if(gridSize % 2 === 0 &&
          ((emptyRow % 2 === 0) !== (inversionCount % 2 === 0))){
-            console.log("empty row:"+emptyRow+",inversions:"+inversionCount);
             return true;
          }
     return false;
@@ -152,17 +150,12 @@ function handleKeyPress(event){
     let emptyCol = emptyIndex % gridSize;
     let targetTile = null;
     if (event.key === "ArrowUp" && emptyRow < gridSize - 1) {
-        console.log("up");
         targetTile = childNodes[emptyIndex + gridSize]; // Tile below moves up
     } else if (event.key === "ArrowDown" && emptyRow > 0) {
-        console.log("down");
         targetTile = childNodes[emptyIndex - gridSize]; // Tile above moves down
     } else if (event.key === "ArrowLeft" && emptyCol < gridSize - 1) {
-        console.log("left");
-        console.log(emptyIndex+1);
         targetTile = childNodes[emptyIndex + 1]; // Tile on right moves left
     } else if (event.key === "ArrowRight" && emptyCol > 0) {
-        console.log("right");
         targetTile = childNodes[emptyIndex - 1]; // Tile on left moves right
     }
     if(targetTile){
@@ -197,7 +190,6 @@ function isAdjacent(clickedTile, emptyTile) {
     const col2 = index2 % gridSize;
     if ((Math.abs(row1 - row2) === 1 && col1 === col2)
         || (Math.abs(col1 - col2) === 1 && row1 === row2)) {
-        console.log("Empty:" + col2 + "," + row2);
         return true;
     }
     return false;
@@ -216,12 +208,10 @@ function swapTiles(tile1, tile2) {
 function checkWin() {
     const nodes = grid.childNodes;
     for (let i = 0; i < gridSize * gridSize - 1; i++) {
-        console.log(nodes[i].dataset.value+","+(i+1));
         if (parseInt(nodes[i].dataset.value) !== i+1) {
             return false;
         }
     }
-    console.log("You won!");
     return true;
 }
 
@@ -234,9 +224,7 @@ function solved() {
         }
     }
     let currentTime = parseFloat(document.getElementById("time-counter").textContent);
-    console.log("Time:"+currentTime);
     let currentMoves = parseInt(document.getElementById("moves-counter").textContent);
-    console.log("Moves:"+currentMoves);
     let bestResults = JSON.parse(localStorage.getItem("bestResults")) || {};
     let key = `grid-${gridSize}`;
     if (!bestResults[key]) {
@@ -306,7 +294,6 @@ function updateBestResults() {
                 return response.json();
            })
            .then(bestResults => {
-                console.log(bestResults);
                 document.getElementById("best-time").textContent = bestResults[0].solveTime;
                 document.getElementById("best-moves").textContent = bestResults[1].moves;
            });
@@ -314,7 +301,6 @@ function updateBestResults() {
     else{
         let bestResults = JSON.parse(localStorage.getItem("bestResults")) || {};
         let key = `grid-${gridSize}`;
-        console.log(bestResults[key]);
         document.getElementById("best-time").textContent = bestResults[key]?.time ? bestResults[key].time.toFixed(3) : "--";
         document.getElementById("best-moves").textContent = bestResults[key]?.moves || "--";
     }
@@ -362,7 +348,6 @@ async function checkLoginStatus(){
           isLoggedIn = false;
         }
     } catch (err) {
-        console.error("Login check failed", err);
         isLoggedIn = false;
     }
 }
@@ -377,10 +362,6 @@ function submitScore(gridSize, time, moves) {
       if (!res.ok){
         return res.text().then(text => { throw new Error(text || res.statusText); });
       } 
-      return res.json();
-    })
-    .then(data => {
-      console.log("Score saved!", data);
     })
     .catch(err => {
       console.error("Error submitting score:", err);
@@ -410,7 +391,6 @@ async function loadLeaderboard() {
     try {
         const res = await fetch(endpoint);
         const data = await res.json();
-        console.log(data);
         leaderboardTableBody.innerHTML = ""; 
   
         data.forEach((score, index) => {
