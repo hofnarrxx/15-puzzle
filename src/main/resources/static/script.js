@@ -53,7 +53,6 @@ applyButton.onclick = () => {
     document.body.classList.toggle("dark-mode", darkMode);
     settingsDialog.style.display = "none";
   };
-document.addEventListener("keydown", handleKeyPress);
 
 function shuffle() {
     let scramble = [];
@@ -123,6 +122,7 @@ function createTiles() {
 }
 
 function updateTiles(scramble) {
+    document.addEventListener("keydown", handleKeyPress);
     let childNodes = grid.childNodes;
     let emptyTile = document.querySelector(".empty");
     emptyTile.classList.remove("empty");
@@ -138,6 +138,7 @@ function updateTiles(scramble) {
             childNodes[i].dataset.index = i;
             childNodes[i].dataset.value = scramble[i];
             childNodes[i].textContent = scramble[i];
+            childNodes[i].addEventListener("click", moveTile);
         }
     }
 }
@@ -217,10 +218,12 @@ function checkWin() {
 
 function solved() {
     clearInterval(timerInterval);
+    document.removeEventListener("keydown", handleKeyPress);
     const tileElements = document.querySelectorAll('.tile');
     for(let tile of tileElements){
         if(!tile.classList.contains("empty")){
             tile.classList.add("win");
+            tile.removeEventListener("click", moveTile);
         }
     }
     let currentTime = parseFloat(document.getElementById("time-counter").textContent);
