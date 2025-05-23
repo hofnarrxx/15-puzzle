@@ -25,9 +25,9 @@ public class ScoreService {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         Score score = new Score();
         score.setUser(user);
-        score.setGridSize(dto.gridSize());
-        score.setSolveTime(dto.time());
-        score.setMoves(dto.moves());
+        score.setGridSize(dto.getGridSize());
+        score.setSolveTime(dto.getTime());
+        score.setMoves(dto.getMoves());
         return scoreRepository.save(score);
     }
 

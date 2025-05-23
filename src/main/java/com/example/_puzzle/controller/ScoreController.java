@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.crypto.SecretKey;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,18 +20,44 @@ import com.example._puzzle.dto.ScoreDTO;
 import com.example._puzzle.model.Score;
 import com.example._puzzle.service.ScoreService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
 @RestController
 @RequestMapping("/scores")
 public class ScoreController {
-    @Autowired
     private ScoreService scoreService;
+    private final SecretKey secretKey;
+
+    public ScoreController(ScoreService scoreService, SecretKey secretKey) {
+        this.scoreService = scoreService;
+        this.secretKey = secretKey;
+    }
 
     @PostMapping()
-    public ResponseEntity<?> submitScore(@RequestBody ScoreDTO dto, Principal principal){
+    public ResponseEntity<?> submitScore(@RequestBody ScoreDTO score, Principal principal){
         if(principal == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login required");
         }
-        return ResponseEntity.ok(scoreService.saveScore(dto, principal));
+        try {
+            Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(score.getToken())
+                .getBody();
+
+            String user = claims.getSubject();
+            int gridSize = (int) claims.get("gridSize");
+
+            if (!user.equals(principal.getName()) || gridSize != score.getGridSize()) {
+                return ResponseEntity.badRequest().body("Invalid token data");
+            }
+            return ResponseEntity.ok(scoreService.saveScore(score, principal));
+        } 
+        catch (JwtException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid or expired token");
+        }
     }
 
     @GetMapping("/personal-best/{gridSize}")
