@@ -54,10 +54,10 @@ public class SecurityConfig {
             );
         http
             .formLogin(form -> form
-                .loginPage("/")                 // your login form is on index.html
+                .loginPage("/")                 // login form is on index.html
                 .loginProcessingUrl("/login")  // Spring Security processes this POST
-                .defaultSuccessUrl("/", true) // where to go after login
-                .failureUrl("/?error=true")    // back to homepage on failure
+                .defaultSuccessUrl("/", true) // on login
+                .failureUrl("/?error=true")    // on failure
                 .permitAll()
             )
             .logout(Customizer.withDefaults());

@@ -96,8 +96,7 @@ function isSolvable(scramble) {
         }
     }
     //for odd: solvable if inversion count is even
-    //for even: solvable if parity of inversion count does not match
-    //parity of emptyTile row index
+    //for even: solvable if parity of inversion count does not match parity of emptyTile row index
     if (gridSize % 2 === 1 && inversionCount % 2 === 0) {
         return true;
     }
@@ -115,7 +114,6 @@ async function shuffleRanked(){
     const data = await res.json();
     const scramble = data.scramble;
     window.currentGameToken = data.token;
-    console.log(scramble);
     updateTiles(scramble);
 }
 

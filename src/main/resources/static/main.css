@@ -200,7 +200,7 @@ dialog#leaderboard-dialog {
     }
   
     .button {
-      width: 80%;
+      width: 100%;
       padding: 0.8rem;
       font-size: 1rem;
     }
@@ -219,6 +219,8 @@ dialog#leaderboard-dialog {
       width: 100%;
       text-align: center;
       margin-bottom: 0.5rem;
+      display:flex;
+      justify-content: center;
     }
   
     label {
