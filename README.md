@@ -20,6 +20,5 @@ A full-stack web application version of the classic **15 Puzzle** game.
 - **Database**: MySQL  
 
 ---
-### ![Puzzle Preview](src\main\resources\static\assets\image_1.jpg)
-
+### ![Puzzle Preview](src/main/resources/static/assets/image_1.jpg)
  
